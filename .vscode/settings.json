@@ -1,0 +1,27 @@
+{
+    "python.pythonPath": ".venv/bin/python",
+    "python.venvPath": "${workspaceFolder}/bin",
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": false,
+    "python.sortImports.args": [
+        "-rc",
+        "--atomic"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.lintOnSave": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintPath": "${workspaceFolder}/bin/pylint",
+    "python.linting.flake8Enabled": false,
+    "python.formatting.provider": "black",
+    "[python]": {
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.autoIndent": "full"
+    },
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+    "editor.tabSize": 4
+}
+
