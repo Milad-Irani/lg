@@ -35,54 +35,55 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'core.apps.CoreConfig',
-    'utils.apps.UtilsConfig',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "core.apps.CoreConfig",
+    "utils.apps.UtilsConfig",
+    "job.apps.JobConfig",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'lg.urls'
+ROOT_URLCONF = "lg.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'lg.wsgi.application'
+WSGI_APPLICATION = "lg.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -95,7 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
     #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     # },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     # {
     #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -109,9 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -124,20 +125,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_ROOT ="static/"
+STATIC_ROOT = "static/"
 STATICFILES_DIRS = []
 
 DEFAULT_FILE_STORAGE = os.environ.get("DEFAULT_FILE_STORAGE")
 
-#LOGGING
+# LOGGING
 class InfoLoggerFilter:
     """
     the aim of this logger filter is to prevent emmiting error events (or higher) into `info` handler.
     """
+
     def __init__(self):
         self.warning_level_num = 30
-    def filter(self , log_record):
+
+    def filter(self, log_record):
         return log_record.levelno <= self.warning_level_num
+
 
 LOGGING = {
     "version": 1,
@@ -155,7 +159,7 @@ LOGGING = {
             "class": "logging.FileHandler",
             "filename": "info.log",
             "formatter": "verbose",
-            "filters": ['info-logger-filter']
+            "filters": ["info-logger-filter"],
         },
         "database_queries": {
             "level": "DEBUG",
@@ -167,7 +171,7 @@ LOGGING = {
             "level": "ERROR",
             "class": "logging.FileHandler",
             "filename": "error.log",
-            "formatter": "verbose"
+            "formatter": "verbose",
         },
     },
     "loggers": {
@@ -180,14 +184,11 @@ LOGGING = {
             "handlers": ["null"],
             "propagate": False,
         },
-        "core": {"handlers": ["info","error"], "propagate": False, "level": "DEBUG"},
-        "utils": {"handlers": ["info","error"], "propagate": False, "level": "DEBUG"},
+        "core": {"handlers": ["info", "error"], "propagate": False, "level": "DEBUG"},
+        "utils": {"handlers": ["info", "error"], "propagate": False, "level": "DEBUG"},
+        "job": {"handlers": ["info", "error"], "propagate": False, "level": "DEBUG"},
     },
-    "filters":{
-        'info-logger-filter':{
-            '()': 'lg.settings.InfoLoggerFilter'
-        }
-    }
+    "filters": {"info-logger-filter": {"()": "lg.settings.InfoLoggerFilter"}},
 }
 
 
@@ -217,5 +218,5 @@ if os.environ.get("isProd", False):
         }
     }
 
-#by setting this value, djnago is_sequre method will return True if the request had header `HTTP_X_FORWARDED_PROTO: https`. in our case our proxy (nginx) sets this header so djnago recognize sequre requests if client calls django via https.sequring requests have many benefits such as DRF makes pagination links as https.
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# by setting this value, djnago is_sequre method will return True if the request had header `HTTP_X_FORWARDED_PROTO: https`. in our case our proxy (nginx) sets this header so djnago recognize sequre requests if client calls django via https.sequring requests have many benefits such as DRF makes pagination links as https.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
