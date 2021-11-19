@@ -12,8 +12,8 @@ after that go to http://localhost:8000 , create a job with a video url , create 
 as  time goes by , clips will generated. 
 
 
-glasoory:
-job: a job is a entity that points to a video that shoudl be downloaded and trimed at some points (called pointers).
-pointer: points on video file that triming eccures before and after them.
-clip: a clip is a entity that involves trimed videos urls . every clip points to a job and a pointer.
-job status: jobs have such status: UnProcessed , Scheduled , UnderProcess , Finished and  Canceled.
+# glasoory:
+* job: a job is a entity that points to a video that shoudl be downloaded and trimed at some points (called pointers).
+* pointer: points on video file that triming eccures before and after them.
+* clip: a clip is a entity that involves trimed videos urls . every clip points to a job and a pointer.
+* job status: jobs have such status: UnProcessed , Scheduled , UnderProcess , Finished and  Canceled.
