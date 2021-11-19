@@ -154,6 +154,7 @@ class ProcessJob:
             """
             return os.path.basename(cloc)
         def get_base_url():
+            #because i didn't have any clue about how to gen base url in general , i put this as hardcoded , but as soom as i get a s3 object storage , this function content would change and generate baseurl as dynamic.
             return "https://ffmpeg.s3.ir-thr-at1.arvanstorage.com/"
 
         base_url = get_base_url()
@@ -232,20 +233,6 @@ class Main:
         ) as executor:
             executor.map(process_job_func, jobs)
 
-    # def FakeProcessJob(self , job):
-    #     print(job)
-    #     res = requests.post('https://reqbin.com/echo/post/json' , data = {})
-    #     print(res.json())
-    #     # time.sleep(10)
-
-    # def handle_fake_jobs(self , jobs):
-    #     with concurrent.futures.ThreadPoolExecutor(
-    #         max_workers=self.thr_cnt
-    #     ) as executor:
-    #         executor.map(self.FakeProcessJob, jobs)
-    #     print('THREADS DONE JOBS')
-    #     return []
-
     def main(self):
         while True:
             jobs = self.get_job()
@@ -257,15 +244,6 @@ class Main:
                 if jobs.count() < 10:
                     jobs_cnt_to_process = jobs.count()
                 self.handle_jobs(jobs[:jobs_cnt_to_process])
-
-        # jobs = ['JOB HANDLED BY THREAD1','JOB HANDLED BY THREAD2','JOB HANDLED BY THREAD3']
-        # while True:
-        #     print('start of while loop')
-        #     if not len(jobs):
-        #         time.sleep(10)
-        #     else:
-        #         jobs = self.handle_fake_jobs(jobs[:len(jobs)])
-        #     print('while loop turned again')
 
 
     def __call__(self):
