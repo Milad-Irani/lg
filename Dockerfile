@@ -3,7 +3,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update \
-    && apt-get install --assume-yes gcc libpq-dev vim ffmpeg curl
+    && apt-get install --assume-yes gcc libpq-dev vim ffmpeg curl gettext
 
 
 RUN mkdir /app
@@ -13,4 +13,5 @@ COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 
 COPY . /app/
-RUN python manage.py test
+
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh

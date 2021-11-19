@@ -1,25 +1,31 @@
 version: '3.2'
 
 services:
-  web:
+  worker:
     restart: always
-    build: ./res
-    container_name: lg
+    build: .
+    container_name: lg_worker
+    env_file: .env
+    command: bash -c "rm -rd info.log ; python3 manage.py migrate ; python3 manage.py startworker"
+    volumes:
+            - ${PWD}/info.log:/app/info.log
+            - ${PWD}/error.log:/app/error.log
+            - .:/app/
+  server:
+    restart: always
+    build: .
+    container_name: lg_server
     expose:
       - "8000"
     ports:
             - "127.0.0.1:8000:8000"
     env_file: .env
-    command: bash -c "rm -rd info.log ;python3 manage.py migrate ; python3 manage.py collectstatic --noinput ; gunicorn --bind 0.0.0.0:8000 ff.wsgi --log-file=- --error-logfile=- --access-logfile=- --log-level=debug --max-requests=500 --workers=3 --timeout=200"
+    command: bash -c "rm -rd info.log ;python3 manage.py collectstatic --noinput ; python3 manage.py migrate ; python3 manage.py runserver 0.0.0.0:8000"
     volumes:
             - ${PWD}/info.log:/app/info.log
             - ${PWD}/error.log:/app/error.log
-            - ./res/:/app/
-
+            - .:/app/
 networks:
    default:
       external:
-         name: lg-network
-
-# volumes:
-#         vl_name:
+         name: lg_default

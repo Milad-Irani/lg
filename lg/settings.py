@@ -192,7 +192,7 @@ LOGGING = {
 }
 
 
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", "lg-bucket")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", "ffmpeg")
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_S3_FILE_OVERWRITE = False
@@ -200,13 +200,10 @@ AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL")
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
 AWS_DEFAULT_ACL = os.environ.get("AWS_DEFAULT_ACL")
 AWS_QUERYSTRING_AUTH = os.environ.get("AWS_QUERYSTRING_AUTH")
-AWS_DEFAULT_ACL = None
-AWS_BUCKET_ACL = None
 
 if os.environ.get("isProd", False):
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
     database_url = urlparse(os.environ.get("DATABASE_URL"))
-
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -220,3 +217,6 @@ if os.environ.get("isProd", False):
 
 # by setting this value, djnago is_sequre method will return True if the request had header `HTTP_X_FORWARDED_PROTO: https`. in our case our proxy (nginx) sets this header so djnago recognize sequre requests if client calls django via https.sequring requests have many benefits such as DRF makes pagination links as https.
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+THREAD_CNT = int(os.environ.get("THREAD_CNT" , 3))
+TRIM_BUFFER = int(os.environ.get("TRIM_BUFFER" , 30))

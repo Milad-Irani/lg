@@ -1,9 +1,13 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from urllib.parse import urlparse
+from os.path import basename
+
 # Create your models here.
 
 class StatusChoice(models.TextChoices):
+    SCHED = "SCHED" , _("Scheduled")
     UNPRC = "UNPRC", _("Unprocessed")
     UNDPRC = "UNDPRC", _("UnderProcess")
     PRC = "PRC", _("Processed")
@@ -13,11 +17,14 @@ class StatusChoice(models.TextChoices):
 
 class Job(models.Model):
     status = models.CharField(
-        max_length=10, choices=StatusChoice.choices, default=StatusChoice.UNPRC
+        max_length=10, choices=StatusChoice.choices, default=StatusChoice.SCHED
     )
     video_url = models.URLField(max_length=400, null = True , unique = True , blank = False)
     created = models.DateTimeField(default=timezone.now)
 
+    @property
+    def vid_name(self):
+        return basename(urlparse(self.video_url).path)
 
 class Pointer(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)

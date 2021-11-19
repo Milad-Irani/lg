@@ -16,3 +16,4 @@ static/
 bbb/
 **/*.mo
 error.log
+.shellenv
