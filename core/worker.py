@@ -223,8 +223,8 @@ class Main:
         assert self.thr_cnt > 0
 
     def get_job(self):
-        """get all unprocessed jobs queryset (it wont query the db)"""
-        return jmodels.Job.objects.filter(status=jmodels.StatusChoice.UNPRC)
+        """get all scheduled jobs queryset (it wont query the db)"""
+        return jmodels.Job.objects.filter(status=jmodels.StatusChoice.SCHED)
 
     def handle_jobs(self, jobs):
         # at this function excecution control gives to worker threads.

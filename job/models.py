@@ -7,8 +7,8 @@ from os.path import basename
 # Create your models here.
 
 class StatusChoice(models.TextChoices):
-    SCHED = "SCHED" , _("Scheduled")
     UNPRC = "UNPRC", _("Unprocessed")
+    SCHED = "SCHED" , _("Scheduled")
     UNDPRC = "UNDPRC", _("UnderProcess")
     PRC = "PRC", _("Processed")
     FLD = "FLD", _("Failed")
@@ -17,7 +17,7 @@ class StatusChoice(models.TextChoices):
 
 class Job(models.Model):
     status = models.CharField(
-        max_length=10, choices=StatusChoice.choices, default=StatusChoice.SCHED
+        max_length=10, choices=StatusChoice.choices, default=StatusChoice.UNPRC
     )
     video_url = models.URLField(max_length=400, null = True , unique = True , blank = False)
     created = models.DateTimeField(default=timezone.now)
