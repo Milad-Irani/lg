@@ -341,7 +341,7 @@ class Main:
                     break
             time.sleep(1)
         else:
-            print("NO JOBS TO DO ------")
+            print("NO JOBS TO ENQUEUE ------")
             time.sleep(settings.SLEEP_TIME)
 
 
