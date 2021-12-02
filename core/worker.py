@@ -326,7 +326,8 @@ class Main:
         self.executor = concurrent.futures.ThreadPoolExecutor(
             max_workers=self.thread_cnt
         )
-        self.executor.submit(process_job_func, self.queue)
+        for i in range(self.thread_cnt):
+            self.executor.submit(process_job_func, self.queue)
 
     def enqueue_jobs(self):
         jobs = self.get_job()
@@ -334,6 +335,8 @@ class Main:
             _q = queue.Queue()
             for job in jobs:
                 _q.put(job)
+                job.status = jmodels.StatusChoice.QUEUED
+                job.save()
             while True:
                 try:
                     self.queue.put(_q.get_nowait())

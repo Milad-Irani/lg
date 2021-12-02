@@ -14,6 +14,7 @@ class StatusChoice(models.TextChoices):
     PRC = "PRC", _("Processed")
     FLD = "FLD", _("Failed")
     CNL = "CNL", _("Canceled")
+    QUEUED = 'QUEUED' , _('Queued')
 
 
 class Job(models.Model):
