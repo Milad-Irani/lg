@@ -6,11 +6,12 @@ services:
     build: .
     container_name: lg_worker
     env_file: .env
-    command: bash -c "rm -rd info.log ; python3 manage.py migrate ; python3 manage.py startworker"
+    command: bash -c "mkdir /files/ ; rm -rd info.log ; python3 manage.py migrate ; python3 manage.py startworker"
     volumes:
             - ${PWD}/info.log:/app/info.log
             - ${PWD}/error.log:/app/error.log
             - .:/app/
+            - ${FILES_BASE_DIR}:/files/
   server:
     restart: always
     build: .

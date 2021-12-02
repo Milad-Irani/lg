@@ -220,5 +220,5 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 THREAD_CNT = int(os.environ.get("THREAD_CNT" , 3))
 TRIM_BUFFER = int(os.environ.get("TRIM_BUFFER" , 30))
-FILES_BASE_DIR = Path(os.environ.get("FILES_BASE_DIR" ,  BASE_DIR / 'lg-files/'))
+FILES_BASE_DIR = Path('/files/')
 SLEEP_TIME = int(os.environ.get("SLEEP_TIME" , 60))

@@ -1,6 +1,6 @@
 echo 'script started------'
-DCOM_VER=$(which docker-compose ; docker-compose --version)
-echo $DCOM_VER
+DOCKER_COM_VERSION=$(which docker-compose ; docker-compose --version)
+echo $DOCKER_COM_VERSION
 echo '--------------------'
 echo "first thing to do is setup the database."
 docker run -v /var/data/pgsql:/var/lib/postgresql/data -p 127.0.0.1:5432:5432 --name lg_postgres --network lg_default -e POSTGRES_PASSWORD=postgres_pass -e POSTGRES_USER=postgres_user -d postgres
