@@ -332,16 +332,10 @@ class Main:
     def enqueue_jobs(self):
         jobs = self.get_job()
         if jobs.count():
-            _q = queue.Queue()
             for job in jobs:
-                _q.put(job)
+                self.queue.put(job)
                 job.status = jmodels.StatusChoice.QUEUED
                 job.save()
-            while True:
-                try:
-                    self.queue.put(_q.get_nowait())
-                except queue.Empty:
-                    break
             time.sleep(1)
         else:
             print("NO JOBS TO ENQUEUE ------")
