@@ -16,6 +16,8 @@ How to start:
 As  time goes by , clips will generated.
 
 
+NOTE: To change database username and password change the values in setup.sh
+
 # glasoory:
 * job: a job is a entity that points to a video that shoudl be downloaded and trimed at some points (called pointers).
 * pointer: points on video file that triming eccures before and after them.
