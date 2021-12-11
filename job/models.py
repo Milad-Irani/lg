@@ -17,14 +17,24 @@ class StatusChoice(models.TextChoices):
     QUEUED = 'QUEUED' , _('Queued')
 
 
-class Job(models.Model):
+class Stream(models.Model):
+    stream_id = models.CharField(max_length=25, primary_key=True)
+    video_id = models.CharField(max_length=25)
+    user_id = models.CharField(max_length=25)
+    game_id = models.CharField(max_length=25)
+    game_name = models.CharField(max_length=100)
+    title = models.CharField(max_length=400)
+    thumbnail_url = models.URLField(max_length=400, null = True , unique = True , blank = True)
+    video_description = models.TextField(blank = True ,default = '')
+    view_count = models.IntegerField(default = 0)
+    created_at = models.DateTimeField(blank = True)
+    published_at = models.DateTimeField(blank = True)
+    video_url = models.URLField(max_length=400, null = True , unique = True , blank = True)
     status = models.CharField(
         max_length=10, choices=StatusChoice.choices, default=StatusChoice.UNPRC
     )
-    video_url = models.URLField(max_length=400, null = True , unique = True , blank = False)
     failure_count = models.IntegerField(default = 0 , blank = True)
     failure_reason = models.TextField(blank = True ,default = '')
-    created = models.DateTimeField(default=timezone.now)
 
     @property
     def vid_name(self):
@@ -34,27 +44,33 @@ class Job(models.Model):
         rnd = get_rnd()
         return root + '_' + rnd + ext
 
-class Pointer(models.Model):
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    pointer = models.PositiveIntegerField(default=0)
+class Marker(models.Model):
+    marker_id = models.BigAutoField(primary_key=True)
+    stream_id = models.ForeignKey(Stream, on_delete=models.CASCADE)
+    # stream_id = models.CharField(max_length=25)
+    position_seconds = models.PositiveIntegerField(default=0)
+    votes_count = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["job", "pointer"], name="pointer-conflict"
+                fields=["stream_id"], name="marker-conflict"
             )
         ]
 
 
 class Clip(models.Model):
-    job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True)
-    pointer = models.ForeignKey(Pointer, on_delete=models.SET_NULL, null=True)
+    clip_id = models.BigAutoField(primary_key=True) # PK
+    stream_id = models.ForeignKey(Stream, on_delete=models.CASCADE)
+    marker_id = models.ForeignKey(Marker, on_delete=models.CASCADE)
+    #marker_id = models.CharField(max_length=25) # FK
+    #stream_id = models.CharField(max_length=25) # FK
     clip_url = models.URLField(max_length=400, default="")
-    created = models.DateTimeField(default=timezone.now)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["job", "pointer"], name="clip-conflict"
+                fields=["stream_id", "marker_id"], name="clip-conflict"
             )
         ]

@@ -320,7 +320,7 @@ class Main:
 
     def get_job(self):
         """get all scheduled jobs queryset (it wont query the db)"""
-        return jmodels.Job.objects.filter(status=jmodels.StatusChoice.SCHED)
+        return jmodels.Stream.objects.filter(status=jmodels.StatusChoice.SCHED)
 
     def start_jobs_consumer(self):
         self.executor = concurrent.futures.ThreadPoolExecutor(
