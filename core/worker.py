@@ -332,15 +332,13 @@ class Main:
     def enqueue_jobs(self):
         jobs = self.get_job()
         if jobs.count():
+            print("There are " + jobs.count() + " new jobs to process.")
             for job in jobs:
                 self.queue.put(job)
                 job.status = jmodels.StatusChoice.QUEUED
                 job.save()
-            time.sleep(1)
         else:
-            print("NO JOBS TO ENQUEUE ------")
             time.sleep(settings.SLEEP_TIME)
-
 
     def main(self):
         self.base_dir_has_perm()
