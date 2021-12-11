@@ -18,23 +18,26 @@ class StatusChoice(models.TextChoices):
 
 
 class Stream(models.Model):
-    stream_id = models.CharField(max_length=25, primary_key=True)
-    video_id = models.CharField(max_length=25)
-    user_id = models.CharField(max_length=25)
-    game_id = models.CharField(max_length=25)
+    stream_id = models.BigIntegerField(primary_key=True)
+    video_id = models.BigIntegerField()
+    user_id = models.BigIntegerField()
+    game_id = models.BigIntegerField()
     game_name = models.CharField(max_length=100)
     title = models.CharField(max_length=400)
     thumbnail_url = models.URLField(max_length=400, null = True , unique = True , blank = True)
     video_description = models.TextField(blank = True ,default = '')
     view_count = models.IntegerField(default = 0)
-    created_at = models.DateTimeField(blank = True)
-    published_at = models.DateTimeField(blank = True)
+    created_at = models.DateTimeField(blank = True, null = True)
+    published_at = models.DateTimeField(blank = True, null = True)
     video_url = models.URLField(max_length=400, null = True , unique = True , blank = True)
     status = models.CharField(
         max_length=10, choices=StatusChoice.choices, default=StatusChoice.UNPRC
     )
     failure_count = models.IntegerField(default = 0 , blank = True)
     failure_reason = models.TextField(blank = True ,default = '')
+
+    class Meta:
+        db_table = 'streams'
 
     @property
     def vid_name(self):
@@ -46,31 +49,26 @@ class Stream(models.Model):
 
 class Marker(models.Model):
     marker_id = models.BigAutoField(primary_key=True)
-    stream_id = models.ForeignKey(Stream, on_delete=models.CASCADE)
-    # stream_id = models.CharField(max_length=25)
+    video_id = models.BigIntegerField()
+    user_id = models.BigIntegerField()
+    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
     position_seconds = models.PositiveIntegerField(default=0)
     votes_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["stream_id"], name="marker-conflict"
-            )
-        ]
-
+        db_table = 'markers'
 
 class Clip(models.Model):
-    clip_id = models.BigAutoField(primary_key=True) # PK
-    stream_id = models.ForeignKey(Stream, on_delete=models.CASCADE)
-    marker_id = models.ForeignKey(Marker, on_delete=models.CASCADE)
-    #marker_id = models.CharField(max_length=25) # FK
-    #stream_id = models.CharField(max_length=25) # FK
+    clip_id = models.BigAutoField(primary_key=True)
+    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
+    marker = models.ForeignKey(Marker, on_delete=models.CASCADE)
     clip_url = models.URLField(max_length=400, default="")
 
     class Meta:
+        db_table = 'clips'
         constraints = [
             models.UniqueConstraint(
-                fields=["stream_id", "marker_id"], name="clip-conflict"
+                fields=["marker_id"], name="clip-conflict"
             )
         ]

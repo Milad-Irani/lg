@@ -5,13 +5,13 @@ from . import models
 
 
 class StreamAdmin(admin.ModelAdmin):
-    list_display = ["stream_id", "status", "created_at"]
-    search_fields = ("stream_id", "status", "created_at")
+    list_display = ["stream_id", "user_id", "video_id", "status", "created_at"]
+    search_fields = ("stream_id", "user_id", "video_id", "status", "created_at")
 
 
 class MarkerAdmin(admin.ModelAdmin):
-    list_display = ["marker_id", "stream_id", "position_seconds", "votes_count"]
-    search_fields = ("marker_id",)
+    list_display = ["marker_id", "stream_id", "user_id", "video_id", "votes_count"]
+    search_fields = ("marker_id", "user_id", "video_id",)
 
 
 class ClipAdmin(admin.ModelAdmin):
