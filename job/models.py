@@ -17,8 +17,8 @@ class StatusChoice(models.TextChoices):
     QUEUED = 'QUEUED' , _('Queued')
 
 
-class Stream(models.Model):
-    stream_id = models.BigIntegerField(primary_key=True)
+class Job(models.Model):
+    job_id = models.BigIntegerField(primary_key=True)
     video_id = models.BigIntegerField()
     user_id = models.BigIntegerField()
     game_id = models.BigIntegerField()
@@ -37,7 +37,7 @@ class Stream(models.Model):
     failure_reason = models.TextField(blank = True ,default = '')
 
     class Meta:
-        db_table = 'streams'
+        db_table = 'jobs'
 
     @property
     def vid_name(self):
@@ -47,28 +47,15 @@ class Stream(models.Model):
         rnd = get_rnd()
         return root + '_' + rnd + ext
 
-class Marker(models.Model):
-    marker_id = models.BigAutoField(primary_key=True)
+class Pointer(models.Model):
+    pointer_id = models.BigAutoField(primary_key=True)
     video_id = models.BigIntegerField()
     user_id = models.BigIntegerField()
-    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
     position_seconds = models.PositiveIntegerField(default=0)
     votes_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
+    clip_url = models.URLField(max_length=400, default="" , blank = True)
 
     class Meta:
-        db_table = 'markers'
-
-class Clip(models.Model):
-    clip_id = models.BigAutoField(primary_key=True)
-    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
-    marker = models.ForeignKey(Marker, on_delete=models.CASCADE)
-    clip_url = models.URLField(max_length=400, default="")
-
-    class Meta:
-        db_table = 'clips'
-        constraints = [
-            models.UniqueConstraint(
-                fields=["marker_id"], name="clip-conflict"
-            )
-        ]
+        db_table = 'pointers'

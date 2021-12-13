@@ -70,7 +70,7 @@ class TrimFile:
             args[1]
         )  # file_location is type of Path object. so ffempeg just knows str.
         self.pointer = args[2]
-        self.pnt = self.pointer.pointer
+        self.pnt = self.pointer.position_seconds
         self.buffer = settings.TRIM_BUFFER
 
     def gen_clip_file_location(self):
@@ -91,7 +91,7 @@ class TrimFile:
         except ffmpeg._run.Error:
             # if any error eccured in triming video , we would enter this block.
             raise exceptions.HardAbort(
-                f"failed to trim clip for job <{self.job.id}> and pointer <{self.pnt}>"
+                f"failed to trim clip for job <{self.job.job_id}> and pointer <{self.pnt}>"
             )
 
     def __call__(self):
@@ -184,12 +184,10 @@ class ProcessJob:
         for pnt_obj, cloc in self.pnt_obj_clip_url_map.items():
             self.pnt_obj_clip_url_map[pnt_obj] = base_url + get_basename(cloc)
 
-    def create_clip_objs(self):
+    def make_clips(self):
         for pnt_obj, clip_url in self.pnt_obj_clip_url_map.items():
-            # turn this to bulk create.
-            jmodels.Clip.objects.create(
-                job=self.job, pointer=pnt_obj, clip_url=clip_url
-            )
+            pnt_obj.clip_url = clip_url
+            pnt_obj.save()
 
     def submit_job_failure(self, exc):
         self.job.failure_count = self.job.failure_count + 1
@@ -201,7 +199,7 @@ class ProcessJob:
             if self.file_location.parent.is_dir():
                 shutil.rmtree(self.file_location.parent)
         except:
-            logger.exception(f"failed to disk cleanup,job: <{self.job.id}>")
+            logger.exception(f"failed to disk cleanup,job: <{self.job.job_id}>")
             pass
 
     def storage_cleanup(self):
@@ -217,15 +215,7 @@ class ProcessJob:
             for name in clip_names:
                 s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=name)
         except:
-            logger.exception(f"failed to storage cleanup,job: <{self.job.id}>")
-            pass
-
-    def obj_cleanup(self):
-        """object cleanup is responsible for cleaning child objects such as clip objects in case proceccing a job failed"""
-        try:
-            self.job.clip_set.all().delete()
-        except:
-            logger.exception(f"failed to obj cleanup,job: <{self.job.id}>")
+            logger.exception(f"failed to storage cleanup,job: <{self.job.job_id}>")
             pass
 
     def process(self):
@@ -249,25 +239,23 @@ class ProcessJob:
 
             UploadFile(self.file_location.parent)()
             self.create_clips_url()
-            self.create_clip_objs()
+            self.make_clips()
         except exceptions.SoftAbort:
             # if process a job raised with soft error excpetion , we left job status untouched to handle it again with another thread at another time.
-            logger.debug(f"failed to process job <{self.job.id}>")
+            logger.debug(f"failed to process job <{self.job.job_id}>")
             self.storage_cleanup()
         except exceptions.HardAbort as e:
             self.job.status = jmodels.StatusChoice.SCHED
             self.submit_job_failure(e)
             self.storage_cleanup()
-            self.obj_cleanup()
-            logger.exception(f"failed to process job <{self.job.id}>")
+            logger.exception(f"failed to process job <{self.job.job_id}>")
         except Exception as e:
             self.job.status = jmodels.StatusChoice.SCHED
             self.submit_job_failure(e)
             self.storage_cleanup()
-            self.obj_cleanup()
-            logger.exception(f"failed to process job <{self.job.id}>")
+            logger.exception(f"failed to process job <{self.job.job_id}>")
         else:
-            logger.info(f"job <{self.job.id}> processed successfully")
+            logger.info(f"job <{self.job.job_id}> processed successfully")
             self.job.status = jmodels.StatusChoice.PRC
         finally:
             self.job.save()
@@ -320,7 +308,7 @@ class Main:
 
     def get_job(self):
         """get all scheduled jobs queryset (it wont query the db)"""
-        return jmodels.Stream.objects.filter(status=jmodels.StatusChoice.SCHED)
+        return jmodels.Job.objects.filter(status=jmodels.StatusChoice.SCHED)
 
     def start_jobs_consumer(self):
         self.executor = concurrent.futures.ThreadPoolExecutor(
@@ -332,7 +320,7 @@ class Main:
     def enqueue_jobs(self):
         jobs = self.get_job()
         if jobs.count():
-            print("There are " + jobs.count() + " new jobs to process.")
+            print("There are " + str(jobs.count()) + " new jobs to process.")
             for job in jobs:
                 self.queue.put(job)
                 job.status = jmodels.StatusChoice.QUEUED

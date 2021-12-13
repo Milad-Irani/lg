@@ -4,21 +4,15 @@ from . import models
 # Register your models here.
 
 
-class StreamAdmin(admin.ModelAdmin):
-    list_display = ["stream_id", "user_id", "video_id", "status", "created_at"]
-    search_fields = ("stream_id", "user_id", "video_id", "status", "created_at")
+class JobAdmin(admin.ModelAdmin):
+    list_display = ["job_id", "user_id", "video_id", "status", "created_at"]
+    search_fields = ("job_id", "user_id", "video_id", "status", "created_at")
 
 
-class MarkerAdmin(admin.ModelAdmin):
-    list_display = ["marker_id", "stream_id", "user_id", "video_id", "votes_count"]
-    search_fields = ("marker_id", "user_id", "video_id",)
+class PointerAdmin(admin.ModelAdmin):
+    list_display = ["pointer_id", "job_id", "user_id", "video_id", "votes_count"]
+    search_fields = ("pointer_id", "user_id", "video_id",)
 
 
-class ClipAdmin(admin.ModelAdmin):
-    list_display = ["clip_id", "stream_id", "marker_id", "clip_url"]
-    search_fields = ("clip_id", "stream_id", "marker_id")
-
-
-admin.site.register(models.Stream, StreamAdmin)
-admin.site.register(models.Marker, MarkerAdmin)
-admin.site.register(models.Clip, ClipAdmin)
+admin.site.register(models.Job, JobAdmin)
+admin.site.register(models.Pointer, PointerAdmin)
