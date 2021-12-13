@@ -3,9 +3,9 @@
 -- DROP TABLE public.jobs;
 
 CREATE TABLE
-IF NOT EXISTS jobs
+IF NOT EXISTS streams
 (
-    job_id bigint NOT NULL,
+    stream_id bigint NOT NULL,
     video_id bigint NOT NULL,
     user_id bigint NOT NULL,
     game_id bigint NOT NULL,
@@ -26,8 +26,8 @@ IF NOT EXISTS jobs
 (10) COLLATE pg_catalog."default" NOT NULL,
     failure_count integer NOT NULL DEFAULT 0,
     failure_reason text COLLATE pg_catalog."default",
-    CONSTRAINT jobs_pkey PRIMARY KEY
-(job_id)
+    CONSTRAINT streams_pkey PRIMARY KEY
+(stream_id)
 
 )
 WITH
