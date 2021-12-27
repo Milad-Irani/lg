@@ -5,13 +5,13 @@ from . import models
 
 
 class JobAdmin(admin.ModelAdmin):
-    list_display = ["job_id", "user_id", "video_id", "status", "created_at"]
-    search_fields = ("job_id", "user_id", "video_id", "status", "created_at")
+    list_display = ["stream_id", "user_id", "video_id", "status", "created_at"]
+    search_fields = ("stream_id", "user_id", "video_id", "status")
 
 
 class PointerAdmin(admin.ModelAdmin):
-    list_display = ["pointer_id", "job_id", "user_id", "video_id", "votes_count"]
-    search_fields = ("pointer_id", "user_id", "video_id",)
+    list_display = ["marker_id", "stream_id", "user_id", "video_id", "votes_count"]
+    search_fields = ("marker_id", "stream_id", "user_id", "video_id")
 
 
 admin.site.register(models.Job, JobAdmin)
