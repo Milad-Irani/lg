@@ -18,7 +18,7 @@ class StatusChoice(models.TextChoices):
 
 
 class Job(models.Model):
-    job_id = models.BigIntegerField(primary_key=True)
+    stream_id = models.BigIntegerField(primary_key=True)
     video_id = models.BigIntegerField()
     user_id = models.BigIntegerField()
     game_id = models.BigIntegerField()
@@ -37,7 +37,7 @@ class Job(models.Model):
     failure_reason = models.TextField(blank = True ,default = '')
 
     class Meta:
-        db_table = 'jobs'
+        db_table = 'streams'
 
     @property
     def vid_name(self):
@@ -48,14 +48,14 @@ class Job(models.Model):
         return root + '_' + rnd + ext
 
 class Pointer(models.Model):
-    pointer_id = models.BigAutoField(primary_key=True)
+    marker_id = models.BigAutoField(primary_key=True)
     video_id = models.BigIntegerField()
     user_id = models.BigIntegerField()
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    stream = models.ForeignKey(Job, on_delete=models.CASCADE)
     position_seconds = models.PositiveIntegerField(default=0)
     votes_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     clip_url = models.URLField(max_length=400, default="" , blank = True)
 
     class Meta:
-        db_table = 'pointers'
+        db_table = 'markers'

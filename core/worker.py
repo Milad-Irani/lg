@@ -91,7 +91,7 @@ class TrimFile:
         except ffmpeg._run.Error:
             # if any error eccured in triming video , we would enter this block.
             raise exceptions.HardAbort(
-                f"failed to trim clip for job <{self.job.job_id}> and pointer <{self.pnt}>"
+                f"failed to trim clip for job <{self.job.stream_id}> and pointer <{self.pnt}>"
             )
 
     def __call__(self):
@@ -199,7 +199,7 @@ class ProcessJob:
             if self.file_location.parent.is_dir():
                 shutil.rmtree(self.file_location.parent)
         except:
-            logger.exception(f"failed to disk cleanup,job: <{self.job.job_id}>")
+            logger.exception(f"failed to disk cleanup,job: <{self.job.stream_id}>")
             pass
 
     def storage_cleanup(self):
@@ -215,7 +215,7 @@ class ProcessJob:
             for name in clip_names:
                 s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=name)
         except:
-            logger.exception(f"failed to storage cleanup,job: <{self.job.job_id}>")
+            logger.exception(f"failed to storage cleanup,job: <{self.job.stream_id}>")
             pass
 
     def process(self):
@@ -242,20 +242,20 @@ class ProcessJob:
             self.make_clips()
         except exceptions.SoftAbort:
             # if process a job raised with soft error excpetion , we left job status untouched to handle it again with another thread at another time.
-            logger.debug(f"failed to process job <{self.job.job_id}>")
+            logger.debug(f"failed to process job <{self.job.stream_id}>")
             self.storage_cleanup()
         except exceptions.HardAbort as e:
             self.job.status = jmodels.StatusChoice.SCHED
             self.submit_job_failure(e)
             self.storage_cleanup()
-            logger.exception(f"failed to process job <{self.job.job_id}>")
+            logger.exception(f"failed to process job <{self.job.stream_id}>")
         except Exception as e:
             self.job.status = jmodels.StatusChoice.SCHED
             self.submit_job_failure(e)
             self.storage_cleanup()
-            logger.exception(f"failed to process job <{self.job.job_id}>")
+            logger.exception(f"failed to process job <{self.job.stream_id}>")
         else:
-            logger.info(f"job <{self.job.job_id}> processed successfully")
+            logger.info(f"job <{self.job.stream_id}> processed successfully")
             self.job.status = jmodels.StatusChoice.PRC
         finally:
             self.job.save()
