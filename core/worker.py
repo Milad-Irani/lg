@@ -155,7 +155,7 @@ class ProcessJob:
         """
         base_dir = self.get_base_dir()
         self.set_filename()
-        file_dir_location = Path("".join(self.filename.split(".")[:-1])).resolve()
+        file_dir_location = (base_dir / Path("".join(self.filename.split(".")[:-1])) ).resolve()
         os.mkdir(file_dir_location)
         self.file_location = base_dir / file_dir_location / self.filename
 
@@ -164,7 +164,7 @@ class ProcessJob:
         for pnt_obj, clip_url in self.pnt_obj_clip_url_map.items():
             clip_name = os.path.basename(urlparse(clip_url).path)
             clip_names.append(clip_name)
-            return clip_names
+        return clip_names
 
     def create_clips_url(self):
         def get_basename(cloc):
