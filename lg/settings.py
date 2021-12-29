@@ -222,3 +222,5 @@ THREAD_CNT = int(os.environ.get("THREAD_CNT" , 3))
 TRIM_BUFFER = int(os.environ.get("TRIM_BUFFER" , 30))
 FILES_BASE_DIR = Path('/files/')
 SLEEP_TIME = int(os.environ.get("SLEEP_TIME" , 60))
+
+DEFAULT_TWITCH_FILE_EXT = '.mkv' #as in the twich-dl docs declared , default downloaded files format is mkv

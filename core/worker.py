@@ -13,6 +13,7 @@ import shutil
 import ffmpeg
 from urllib.parse import urlparse
 import queue
+from twitch.dl import TwitchDownload
 
 
 AWS_STORAGE_BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
@@ -58,6 +59,10 @@ class DownloadFile:
     def __call__(self):
         self.download_vid()
 
+def twitch_dl(video_url , file_location):
+    error = TwitchDownload(video_url , file_location).download()
+    if error:
+        raise exceptions.HardAbort(error)
 
 class TrimFile:
     def __init__(self, *args, **kwargs):
@@ -227,9 +232,7 @@ class ProcessJob:
             self.set_file_location()
             self.job.status = jmodels.StatusChoice.UNDPRC
             self.job.save()
-            DownloadFile(
-                self.job, self.file_location
-            )()  # file_location is the main video file location
+            twitch_dl(self.job.video_url , self.file_location) # file_location is the main video file location
             for pnt in self.pnts:
                 # for every pointer , we create a copy file and trim it.
                 pnt_obj_cloc = TrimFile(self.job, self.file_location, pnt)()

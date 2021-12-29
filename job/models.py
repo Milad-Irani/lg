@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from os.path import basename,splitext
 import string
 import random
+from django.conf import settings
 # Create your models here.
 
 class StatusChoice(models.TextChoices):
@@ -43,10 +44,14 @@ class Job(models.Model):
     def vid_name(self):
         def get_rnd():
             return ''.join(random.sample(string.digits + string.ascii_letters ,10))
-        root , ext = splitext(basename(urlparse(self.video_url).path))
-        rnd = get_rnd()
-        return root + '_' + rnd + ext
 
+        rnd = get_rnd()
+        return str(self.video_id) + '_' + rnd + settings.DEFAULT_TWITCH_FILE_EXT
+
+    def save(self , *args , **kwargs):
+        if self.video_url and 'twitch.tv' in self.video_url:
+            self.video_id = self.video_url.split('/')[-1]
+        super().save(*args , **kwargs)
 class Pointer(models.Model):
     marker_id = models.BigAutoField(primary_key=True)
     video_id = models.BigIntegerField()

@@ -9,7 +9,7 @@ echo "database started----"
 
 touch info.log
 touch error.log
-docker-compose up -d
+docker-compose up -d --build
 echo "worker and server services started"
 echo "read bellow to ensure there are two services named lg_server and lg_worker works as expected"
 docker ps
