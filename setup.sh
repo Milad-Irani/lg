@@ -12,6 +12,8 @@ touch error.log
 docker-compose up -d --build
 echo "worker and server services started"
 echo "read bellow to ensure there are two services named lg_server and lg_worker works as expected"
+echo "to creating tables migrations , we wait 2 seconds"
+sleep 2
 docker ps
 echo "creating a user to login in django admin panel page"
 docker exec -it lg_server bash -c "./manage.py createsuperuser --username milad"
