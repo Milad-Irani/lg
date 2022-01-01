@@ -59,8 +59,8 @@ class DownloadFile:
     def __call__(self):
         self.download_vid()
 
-def twitch_dl(video_url , file_location):
-    error = TwitchDownload(video_url , file_location).download()
+def twitch_dl(video_id , file_location):
+    error = TwitchDownload(video_id , file_location).download()
     if error:
         raise exceptions.HardAbort(error)
 
@@ -232,7 +232,7 @@ class ProcessJob:
             self.set_file_location()
             self.job.status = jmodels.StatusChoice.UNDPRC
             self.job.save()
-            twitch_dl(self.job.video_url , self.file_location) # file_location is the main video file location
+            twitch_dl(self.job.video_id , self.file_location) # file_location is the main video file location
             for pnt in self.pnts:
                 # for every pointer , we create a copy file and trim it.
                 pnt_obj_cloc = TrimFile(self.job, self.file_location, pnt)()

@@ -30,7 +30,6 @@ class Job(models.Model):
     view_count = models.IntegerField(default = 0)
     created_at = models.DateTimeField(blank = True, null = True)
     published_at = models.DateTimeField(blank = True, null = True)
-    video_url = models.URLField(max_length=400, null = True , unique = True , blank = True)
     status = models.CharField(
         max_length=10, choices=StatusChoice.choices, default=StatusChoice.UNPRC
     )
@@ -48,10 +47,6 @@ class Job(models.Model):
         rnd = get_rnd()
         return str(self.video_id) + '_' + rnd + settings.DEFAULT_TWITCH_FILE_EXT
 
-    def save(self , *args , **kwargs):
-        if self.video_url and 'twitch.tv' in self.video_url:
-            self.video_id = self.video_url.split('/')[-1]
-        super().save(*args , **kwargs)
 class Pointer(models.Model):
     marker_id = models.BigAutoField(primary_key=True)
     video_id = models.BigIntegerField()

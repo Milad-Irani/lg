@@ -4,9 +4,9 @@ from pathlib import Path
 
 
 class TwitchDownload():
-    def __init__(self , video_url , file_location):
-        self.video_url = video_url
-        command = "twitch-dl download -q source %s" % video_url
+    def __init__(self , video_id , file_location):
+        self.video_id = video_id
+        command = "twitch-dl download -q source %s" % video_id
         self.command = command.split(' ')
         self.file_location = file_location
 
