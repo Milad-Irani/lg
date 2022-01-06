@@ -16,5 +16,5 @@ echo "to creating tables migrations , we wait 2 seconds"
 sleep 2
 docker ps
 echo "creating a user to login in django admin panel page"
-docker exec -it lg_server bash -c "./manage.py createsuperuser --username milad"
+docker exec -it lg_server bash -c "./manage.py createsuperuser --username milad --email milad@test.com"
 echo "now your username is milad . login to 127.0.0.1:8000/admin/ and enjoy:)) "

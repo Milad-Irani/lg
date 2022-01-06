@@ -119,18 +119,16 @@ class UploadFile:
         )
 
     def upload_clip(self, clip_loc):
-        clip_destination = self.get_clip_destination(clip_loc)
+        file_name = self.get_file_name(clip_loc)
         with open(clip_loc, "rb") as file:
             self.s3.upload_fileobj(
                 file,
                 AWS_STORAGE_BUCKET_NAME,
-                clip_destination,
-                Config=S3_Config,
-                ExtraArgs={"ACL": AWS_DEFAULT_ACL},
+                file_name
             )
             # about above line. some s3 object storages prevent to get files larger than ~400 mb. also uploading a large file as a whole have risks and correpted with any network issue during upload.so to prevent those sittuations we upload files as multipart. it means the boto3 client will split the video file and send every part seperated. on the other side s3 server will merge these files togheter and save this as one large file. is fun yeeeh? :))
 
-    def get_clip_destination(self, clip_loc):
+    def get_file_name(self, clip_loc):
         # we shoudl remove directory names from clip location and just use clip name to upload.
         return os.path.basename(clip_loc)
 
@@ -180,8 +178,7 @@ class ProcessJob:
             return os.path.basename(cloc)
 
         def get_base_url():
-            # because i didn't have any clue about how to gen base url in general , i put this as hardcoded , but as soom as i get a s3 object storage , this function content would change and generate baseurl as dynamic.
-            return "https://ffmpeg.s3.ir-thr-at1.arvanstorage.com/"
+            return settings.AWS_S3_ENDPOINT_URL + settings.AWS_STORAGE_BUCKET_NAME
 
         base_url = get_base_url()
         if not base_url.endswith("/"):
@@ -329,7 +326,9 @@ class Main:
                 job.status = jmodels.StatusChoice.QUEUED
                 job.save()
         else:
-            time.sleep(settings.SLEEP_TIME)
+            print("No job found")
+
+        time.sleep(settings.SLEEP_TIME)
 
     def main(self):
         self.base_dir_has_perm()
