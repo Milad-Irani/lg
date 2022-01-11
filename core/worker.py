@@ -92,7 +92,7 @@ class TrimFile:
         try:
             ffmpeg.input(
                 self.file_location, ss=self.pnt - self.buffer, t=2 * self.buffer
-            ).output(self.clip_file_location).run()
+            ).output(self.clip_file_location).overwrite_output().run()
         except ffmpeg._run.Error:
             # if any error eccured in triming video , we would enter this block.
             raise exceptions.HardAbort(
