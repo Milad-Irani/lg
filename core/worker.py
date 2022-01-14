@@ -258,7 +258,11 @@ class ProcessJob:
             logger.info(f"job <{self.job.stream_id}> processed successfully")
             self.job.status = jmodels.StatusChoice.PRC
         finally:
-            self.job.save()
+            try:
+                self.job.save()
+            except Exception:
+                logger.exception(f'failed to change job {self.job.stream_id} at db')
+                pass
             self.disk_cleanup()
 
 
