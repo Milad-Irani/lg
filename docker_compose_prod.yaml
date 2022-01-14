@@ -1,0 +1,27 @@
+version: '3.2'
+
+services:
+  worker:
+    restart: always
+    build: .
+    container_name: worker
+    env_file: .env
+    command: bash -c "mkdir /files/ ; python3 manage.py migrate ; python3 manage.py
+      startworker"
+    volumes:
+      - ${PWD}/info.log:/app/info.log
+      - ${PWD}/error.log:/app/error.log
+      - ${FILES_BASE_DIR}:/files/
+  server:
+    restart: always
+    build: .
+    container_name: master
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    env_file: .env
+    command: bash -c "python3 manage.py collectstatic --noinput ; python3 manage.py      migrate ; python3 manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ${PWD}/info.log:/app/info.log
+      - ${PWD}/error.log:/app/error.log

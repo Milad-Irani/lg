@@ -272,7 +272,10 @@ def process_job_func(queue):
     """
     while True:
         job = queue.get()
-        ProcessJob(job).process()
+        try:
+            ProcessJob(job).process()
+        except Exception as e :
+            print(e)
 
 
 class Main:
